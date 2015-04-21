@@ -1,0 +1,1 @@
+For possible permutations of usage, see "Cii Example.cpp".
