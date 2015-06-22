@@ -188,6 +188,16 @@ CnInitializeProtocol(   unsigned int SourceId,                  /** Who are we? 
         return 0;
 	}
 
+
+    //
+    //  Make sure if we exec ourselves, we close the CANbus handle.
+    //
+    if (fcntl(hCanbus, F_SETFD, FD_CLOEXEC) == -1) {
+        LogMessage("fcntl(fd, F_SETFD, FD_CLOEXEC) Failed!");
+        return 0;
+    }
+
+
     //
     //  Belts and braces, make sure Self reception is disabled.
     //

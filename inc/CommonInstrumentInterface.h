@@ -126,6 +126,13 @@ int
 CiiGetActiveMaster(LoginInfo_t * Info);
 
 
+/**
+ *  API to get whether a LocalUI is connected or not.
+ *  This returns the count of the Local UIs attached.
+ */
+int __attribute__  ((visibility ("default")))
+CiiLocalUIActive(void);
+
 
 /**
  *  NULL = no connections

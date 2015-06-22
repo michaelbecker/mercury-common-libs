@@ -181,15 +181,21 @@ typedef struct Login_t_{
 
 
 
-enum TypeRangeStart {
-    GetRangeStart       = 0x00000,
-    ActionRangeStart    = 0x10000,
-    StatusRangeStart    = 0x20000,
-    
-    //  Add new message types here, 
-    //  From (0 - 0xFF):0000
+/**
+ *  We need to start enforcing the numbering conventions in the Specification.
+ */
+#define TYPE_RANGE_MASK     0x00FF0000
+#define GET_RANGE_ID        0x00000000
+#define ACTION_RANGE_ID     0x00010000
+#define STATUS_RANGE_ID     0x00020000
+#define SEGMENT_RANGE_ID    0x00030000
 
-};
+#define IS_GET_MSG(msg_)        ((msg_ & TYPE_RANGE_MASK) == GET_RANGE_ID)
+#define IS_ACTION_MSG(msg_)     ((msg_ & TYPE_RANGE_MASK) == ACTION_RANGE_ID)
+#define IS_STATUS_MSG(msg_)     ((msg_ & TYPE_RANGE_MASK) == STATUS_RANGE_ID)
+#define IS_SEGMENT_MSG(msg_)    ((msg_ & TYPE_RANGE_MASK) == SEGMENT_RANGE_ID)
+
+
 
 enum InstrumentRangeStart {
 

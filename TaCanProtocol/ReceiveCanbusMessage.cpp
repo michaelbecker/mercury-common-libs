@@ -729,6 +729,8 @@ void *ReadThread(void *Unused)
     (void)Unused;
     CANBUS_MESSAGE Msg;
     int BytesRead;
+    struct sched_param SchedulerParameters;
+    int rc;
     //--------------------------------
     
     //
@@ -737,14 +739,8 @@ void *ReadThread(void *Unused)
     pthread_detach(pthread_self());
 
     //
-    //  This should be higher priority than most of CE.  
-    //  See: http://msdn.microsoft.com/en-us/library/aa450618.aspx
+    //  This should be higher priority than most of the OS.
     //
-    struct sched_param SchedulerParameters;
-    int rc;
-    //static int MaxFifoSchedPriority = 99;
-    //static int MinFifoSchedPriority = 1;
-    
     memset(&SchedulerParameters, 0, sizeof(SchedulerParameters));
 
     SchedulerParameters.sched_priority = 55;
@@ -753,6 +749,9 @@ void *ReadThread(void *Unused)
                                 SCHED_FIFO,
                                 &SchedulerParameters
                                 );
+    //
+    //  If this fails, nothing much to do.
+    //
     (void)rc;
 
 
@@ -773,8 +772,6 @@ void *ReadThread(void *Unused)
         //
         //  Keep stats to monitor performance...
         //
-        //QueryPerformanceCounter(&StartReceiveTime);
-
         ProtocolStats.ReceiveCount++;
 
         if (BytesRead != sizeof(CANBUS_MESSAGE)){
@@ -796,21 +793,6 @@ void *ReadThread(void *Unused)
         else{
             ReceiveCanbusMessage(&Msg);
         }
-
-        //QueryPerformanceCounter(&EndReceiveTime);
-
-#if 0
-        double Interval = (double)(EndReceiveTime.QuadPart - StartReceiveTime.QuadPart) / (double)PerformanceFreq.QuadPart;
-
-        ProtocolStats.CurReceiveTime = Interval;
-
-        if (Interval > ProtocolStats.MaxReceiveTime){
-            ProtocolStats.MaxReceiveTime = Interval;
-        }
-
-        ProtocolStats.TotalReceiveTime += Interval;
-        ProtocolStats.AvgReceiveTime = ProtocolStats.TotalReceiveTime / (double)ProtocolStats.ReceiveCount;
-#endif        
     }
 }
 

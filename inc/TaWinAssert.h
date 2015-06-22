@@ -21,7 +21,7 @@
        if (!(_TestCondition)){                                  \
            LogMessage("ASSERT FAILED! \"%s\" %s:%d\n",          \
                         #_TestCondition, __FILE__, __LINE__);   \
-           sleep(2);                                            \
+           sleep(5);                                            \
            abort();                                             \
        }
 

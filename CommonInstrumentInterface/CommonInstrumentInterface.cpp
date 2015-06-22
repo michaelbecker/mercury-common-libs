@@ -37,6 +37,11 @@ static bool IsMasterSet = false;
 static CiiClientRegistration_t *MasterClient = NULL;
 static pthread_mutex_t BackendListLock;
 
+/**
+ *  Count the Local UI Connections.
+ */
+static int LocalUICount = 0;
+
 
 /**
  *  Global Module lock to serialize application callbacks, so that 
@@ -97,6 +102,33 @@ CiiGetActiveMaster(LoginInfo_t * CurMaster)
 
 
 
+/**
+ *  API to get whether a LocalUI is connected or not.
+ *  This returns the count of the Local UIs attached.
+ */
+int __attribute__  ((visibility ("default")))
+CiiLocalUIActive(void)
+{
+    //-------------
+    int Success;
+    //-------------
+
+    //
+    //  LOCK ----------------------------------------------------------------
+    //
+    pthread_mutex_lock(&BackendListLock);
+
+    Success = LocalUICount;
+
+    pthread_mutex_unlock(&BackendListLock);
+    //
+    //  UNLOCK --------------------------------------------------------------
+    //
+
+    return Success;
+}
+
+
 
 /**
  *  Add a Get command to listen for.
@@ -107,8 +139,12 @@ CiiRegisterGetCommandMessage(   unsigned int Command,
                                 void *UserData
                                 )
 {
+    //---------------------------------
     MessageCallbackContainer_t c;
-    
+    //---------------------------------
+
+    ASSERT( IS_GET_MSG(Command) );
+
     c.Callback = Callback;
     c.UserData = UserData;
     c.Flags = 0;
@@ -117,6 +153,12 @@ CiiRegisterGetCommandMessage(   unsigned int Command,
 	//  LOCK ----------------------------------------------------
 	//
 	pthread_mutex_lock(&ApplicationCallbackLock);
+
+    if (RegisteredGetMessages.find(Command) != RegisteredGetMessages.end()){
+        LogMessage("DOUBLE REGISTERED GET COMMAND 0x%08x", Command);
+        sleep(5);
+        abort();
+    }
 
     RegisteredGetMessages[Command] = c;
 
@@ -137,7 +179,11 @@ CiiRegisterActionCommandMessage(    unsigned int Command,
                                     void *UserData
                                     )
 {
+    //---------------------------------
     MessageCallbackContainer_t c;
+    //---------------------------------
+
+    ASSERT( IS_ACTION_MSG(Command) );
     
     c.Callback = Callback;
     c.UserData = UserData;
@@ -147,8 +193,14 @@ CiiRegisterActionCommandMessage(    unsigned int Command,
 	//  LOCK ----------------------------------------------------
 	//
 	pthread_mutex_lock(&ApplicationCallbackLock);
-
-	RegisteredActionMessages[Command] = c;
+    
+    if (RegisteredActionMessages.find(Command) != RegisteredActionMessages.end()){
+        LogMessage("DOUBLE REGISTERED ACTION COMMAND 0x%08x", Command);
+        sleep(5);
+        abort();
+    }
+	
+    RegisteredActionMessages[Command] = c;
 
 	//
 	//  UNLOCK --------------------------------------------------
@@ -165,8 +217,12 @@ void __attribute__  ((visibility ("default")))
 CiiDeprecateGetCommandMessage(  unsigned int Command
                                 )
 {
+    //---------------------------------
     MessageCallbackContainer_t c;
-    
+    //---------------------------------
+
+    ASSERT( IS_GET_MSG(Command) );
+
     c.Callback = NULL;
     c.UserData = NULL;
     c.Flags = McfDeprecated;
@@ -175,6 +231,12 @@ CiiDeprecateGetCommandMessage(  unsigned int Command
 	//  LOCK ----------------------------------------------------
 	//
 	pthread_mutex_lock(&ApplicationCallbackLock);
+
+    if (RegisteredGetMessages.find(Command) != RegisteredGetMessages.end()){
+        LogMessage("DOUBLE REGISTERED GET COMMAND 0x%08x", Command);
+        sleep(5);
+        abort();
+    }
 
     RegisteredGetMessages[Command] = c;
 
@@ -193,7 +255,11 @@ void __attribute__  ((visibility ("default")))
 CiiDeprecateActionCommandMessage(   unsigned int Command
                                     )
 {
+    //---------------------------------
     MessageCallbackContainer_t c;
+    //---------------------------------
+
+    ASSERT( IS_ACTION_MSG(Command) );
     
     c.Callback = NULL;
     c.UserData = NULL;
@@ -203,6 +269,12 @@ CiiDeprecateActionCommandMessage(   unsigned int Command
 	//  LOCK ----------------------------------------------------
 	//
 	pthread_mutex_lock(&ApplicationCallbackLock);
+
+    if (RegisteredActionMessages.find(Command) != RegisteredActionMessages.end()){
+        LogMessage("DOUBLE REGISTERED ACTION COMMAND 0x%08x", Command);
+        sleep(5);
+        abort();
+    }
 
 	RegisteredActionMessages[Command] = c;
 
@@ -681,6 +753,7 @@ CiiBackendRouteReceivedMessage(CII_BACK_END_HANDLE ClientHandle, CiiMessage *Mes
 
                 case AlLocalUI:
                     Client->GrantedAccess = AlLocalUI;
+                    LocalUICount++;
                     break;
 
                 case AlEngineering:
@@ -808,6 +881,9 @@ CiiUnregisterBackend(CII_BACK_END_HANDLE ClientHandle)
     if (Client->GrantedAccess == AlMaster){
         IsMasterSet = false;
         MasterClient = NULL;
+    }
+    else if (Client->GrantedAccess == AlLocalUI){
+        LocalUICount--;
     }
 
     BackendList.remove(Client);

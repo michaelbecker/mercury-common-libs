@@ -232,6 +232,8 @@ CiiSendStatus(unsigned int SubStatus, unsigned char *Data, unsigned int DataLeng
     CiiMessage *Message;
     //----------------------------------------------
 
+    ASSERT( IS_STATUS_MSG(SubStatus) );
+
     Message = CiiAllocateMessage(STATUS_HEADER_SIZE + DataLength);
     ASSERT(Message != NULL);
 
