@@ -11,7 +11,8 @@ all: $(TARGET)
 #
 #	Source Files
 #
-SRC =	DataStore.cpp  
+SRC =	DataStore.cpp \
+		RunTimeErrorsStub.cpp \
 
 
 #

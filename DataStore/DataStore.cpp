@@ -11,8 +11,9 @@
 
 #include <map>
 #include "DataStore.h"
-#include "RunTimeErrors.h"
-#include "common_system_logs.h"
+#include "RunTimeErrorsStub.h"
+//#include "RunTimeErrors.h"
+//#include "common_system_logs.h"
 #include "CommonFiles.h"
 #include "TaWinAssert.h"
 #include "Version.h"

@@ -20,7 +20,6 @@ SRC =	\
 #	Libraries we depend on.
 #
 LIBS= -lDataStore \
-	  -lSyslog \
 	  -lTimers \
 	  -lCommonInstrumentInterface \
 	  -lTaCanProtocol \
