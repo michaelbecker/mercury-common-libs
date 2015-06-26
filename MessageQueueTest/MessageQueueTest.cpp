@@ -173,7 +173,7 @@ TestThread(void *Parameter)
         if (rc != 0){
             printf("Timeout!\n");
         }
-        else if (rc == 0){
+        else{
 
             switch(Id){
 
@@ -189,10 +189,6 @@ TestThread(void *Parameter)
                     printf("Terminating Thread\n");
                     return 0;
             }
-        }
-        else{
-            printf("Unexpecetd Status %d\n", rc);
-            return 0;
         }
     }
 }

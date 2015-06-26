@@ -204,6 +204,10 @@ RouteStatusMessageToClientThreads(void * UserData)
             Client->Status.Messages->push_front(Copy);
             sem_post(&Client->Status.ThreadMessageSemaphore);
         }
+        else{
+            Copy->CleanupMessageCallback = NULL;
+            CiiFreeMessage(Copy);
+        }
 
         //
         //  UNLOCK ---------------------------------------

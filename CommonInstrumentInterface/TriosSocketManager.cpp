@@ -517,8 +517,6 @@ SendTriosComm(void *ClientData, CiiMessageData *GenericData, unsigned int Length
     int CurrentCfiCorruptLength = CfiCorruptLength();
     if (CurrentCfiCorruptLength){
         Header.Length += CurrentCfiCorruptLength;
-        if (Header.Length < 0)
-            Header.Length = 0;
     }
 
     SocketManager = (SocketManager_t *)ClientData;
