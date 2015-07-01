@@ -197,6 +197,9 @@ RouteStatusMessageToClientThreads(void * UserData)
             LogMessage("CiiStat: Client queue too deep! %d Messages", 
                         Client->Status.Messages->size());
 
+            Copy->CleanupMessageCallback = NULL;
+            CiiFreeMessage(Copy);
+
             Client->CloseBackend(Client->ClientData);
         }
         else if (!Client->Status.TerminateThread){
