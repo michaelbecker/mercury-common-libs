@@ -26,6 +26,12 @@ NODE_DIRS =	\
 	SystemEventsTest \
 	DataStore \
 	DataStoreTest \
+	SegmentExecutionEngine \
+	SegmentHelpers \
+	SegmentTest \
+	SignalCalculator \
+	SignalManagerUnitTest \
+
 
 
 #

@@ -29,6 +29,10 @@ LIB_DIRS += -L${COMMON_DIR}/LogLib \
 			-L${COMMON_DIR}/CommonInstrumentInterface \
             -L${COMMON_DIR}/SystemEvents \
             -L${COMMON_DIR}/DataStore \
+            -L${COMMON_DIR}/SegmentExecutionEngine \
+            -L${COMMON_DIR}/SegmentHelpers \
+            -L${COMMON_DIR}/SignalCalculator \
+
 
 
 CXX				= ${CROSS_COMPILE}gcc
