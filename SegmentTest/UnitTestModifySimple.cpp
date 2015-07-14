@@ -151,15 +151,15 @@ UnitTestModifySimple(ENGINE_HANDLE Engine)
                                                                 &Status, 
                                                                 &SegmentIndex);
 
+    UtilFreeSegmentMessageBuffers( SegmentArray,
+                            3,
+                            Buffer);
+
     if (!ModifiedHandle){
         printf("Failed SeModifySegmentList(), Status = %d, BadSegmentIndex = %d\n",
                 Status, SegmentIndex);
         return false;
     }
-
-    UtilFreeSegmentMessageBuffers( SegmentArray,
-                            3,
-                            Buffer);
 
 
     //

@@ -9,7 +9,7 @@
  *  This can all be in-line, since this is required to be a 
  *  manual step.
  */
-#define LOG_LIBRARY_VERSION()  LogMessage("CommonInstrumentInterface 1.0.0.4 - Built on " __DATE__)
+#define LOG_LIBRARY_VERSION()  LogMessage("CommonInstrumentInterface 1.0.0.6 - Built on " __DATE__)
 
 #endif
 

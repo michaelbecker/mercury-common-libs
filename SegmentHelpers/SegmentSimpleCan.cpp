@@ -12,6 +12,8 @@ SegmentSimpleCan::SegmentSimpleCan( ENGINE_HANDLE hEngine,                      
                                     unsigned int segmentModifyArbitrationId     //  CANbus ID Command / Ext command to 
                                     )
     :   ISegmentSimple(hEngine, SubCommand, UserFlags, DataLength, Name),
+        SegmentComplete(false),
+        InternalError(false),
         SegmentStartArbitrationId(segmentStartArbitrationId),
         SegmentCompleteArbitrationId(segmentCompleteArbitrationId),
         SegmentModifyArbitrationId(segmentModifyArbitrationId)

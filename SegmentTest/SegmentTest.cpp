@@ -7,6 +7,7 @@
 #include "CommonSegments.h"
 
 #include "SegmentTest.h"
+#include "LogLib.h"
 
 void RegisterIsoSegment(ENGINE_HANDLE Engine);
 void RegisterRampSegment(ENGINE_HANDLE Engine);
@@ -255,6 +256,8 @@ int main(int argc, char* argv[])
     printf("\n==================================================\n");
     printf("  Automated Unit Test of SegmentExecutionEngine\n");
     printf("==================================================\n\n");
+
+    InitLog();
 
     Engine = SeCreateSegmentEngine(55);
     

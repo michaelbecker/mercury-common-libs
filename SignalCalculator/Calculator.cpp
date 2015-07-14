@@ -184,7 +184,8 @@ InputSignal::InputSignal(   int id,
                             int maxForwardsIndex)
     :   Id(id),
 		MaxBackwardsIndex(maxBackwardsIndex),
-        MaxForwardsIndex(maxForwardsIndex)
+        MaxForwardsIndex(maxForwardsIndex),
+        Signal(NULL)
 {
 }
 
@@ -337,7 +338,13 @@ CalcSignal::CalcSignal( int Id,
                         void *userData
                         )
             :   BaseSignal(Id, debugName, reset, userData),
-                Function(function)
+                Function(function),
+                RelativeMaxBackwardsIndex(0),
+                RelativeMaxForwardsIndex(0),
+                AbsoluteMaxForwardsIndex(0),
+                AbsoluteMaxBackwardsIndex(0),
+                Index(0),
+                SignalDneCount(0)
 {
     //	
     //	Calculated signals must contain input signals!

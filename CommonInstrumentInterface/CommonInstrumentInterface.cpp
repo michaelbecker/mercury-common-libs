@@ -41,6 +41,28 @@ static pthread_mutex_t BackendListLock;
  *  Count the Local UI Connections.
  */
 static int LocalUICount = 0;
+static LocalUIDisconnectCallback_t LocalUIDisconnectCallback = NULL;
+static void *LocalUIDisconnectUserData = NULL;
+
+
+
+void __attribute__  ((visibility ("default")))
+CiiRegisterLocalUIDisconnect(LocalUIDisconnectCallback_t callback, void *UserData)
+{
+    //
+    //  LOCK ----------------------------------------------------------------
+    //
+    pthread_mutex_lock(&BackendListLock);
+
+    LocalUIDisconnectCallback = callback;
+    LocalUIDisconnectUserData = UserData;
+
+    //
+    //  UNLOCK --------------------------------------------------------------
+    //
+    pthread_mutex_unlock(&BackendListLock);
+}
+
 
 
 /**
@@ -883,7 +905,12 @@ CiiUnregisterBackend(CII_BACK_END_HANDLE ClientHandle)
         MasterClient = NULL;
     }
     else if (Client->GrantedAccess == AlLocalUI){
+
         LocalUICount--;
+
+        if ((LocalUICount == 0) && (LocalUIDisconnectCallback != NULL)){
+            LocalUIDisconnectCallback(LocalUIDisconnectUserData);
+        }
     }
 
     BackendList.remove(Client);

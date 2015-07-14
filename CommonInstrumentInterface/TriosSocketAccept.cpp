@@ -50,10 +50,13 @@ TriosSocketAcceptThread(void *Parameter)
 
     getaddrinfo(NULL, TRIOS_CONNECT_PORT, &hints, &res);
 
-    // 
-    //  Create a SOCKET for connecting to server
     //
-    ListenSocket = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+    //  Create a SOCKET for connecting to server.
+    //  We need to add the SOCK_CLOEXEC or there are problems with 
+    //  various upgrades because the new process we fork() / exec() 
+    //  keeps the fd open.
+    //
+    ListenSocket = socket(res->ai_family, res->ai_socktype | SOCK_CLOEXEC, res->ai_protocol);
     if (ListenSocket == -1) {
         LogMessage("socket failed with error: %ld - %s", errno, strerror(errno));
         freeaddrinfo(res);

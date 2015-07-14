@@ -9,7 +9,7 @@
  *  This can all be in-line, since this is required to be a 
  *  manual step.
  */
-#define LOG_LIBRARY_VERSION()  LogMessage("LogLib 1.0.0.2 - Built on " __DATE__)
+#define LOG_LIBRARY_VERSION()  LogMessage("LogLib 1.0.1.0 - Built on " __DATE__)
 
 #endif
 

@@ -12,7 +12,10 @@ static LogMsg*
 AllocLogLibMsg(void)
 {
     LogMsg *Msg = (LogMsg *)malloc(sizeof(LogMsg));
-    ASSERT(Msg != NULL);
+    if(Msg == NULL){
+        printf("LogLib(%d): Msg == NULL\n", __LINE__);
+        abort();
+    }
 
     Msg->Signature = LOG_LIB_SIGNATURE;
 
@@ -37,12 +40,20 @@ LogMessage(char *Message, ...)
     // 
     //  Check that the library has been initialized
     //
-    ASSERT(LogLibInitialized == true);
+    if(!LogLibInitialized){
+        printf("LogLib(%d): !LogLibInitialized\n", __LINE__);
+        abort();
+    }
 
+    
     Msg = AllocLogLibMsg();
 
     Msg->Buffer = (char *)malloc(BUFFER_SIZE);
-    ASSERT(Msg->Buffer != NULL);
+    if(Msg->Buffer == NULL){
+        printf("LogLib(%d): Msg->Buffer == NULL\n", __LINE__);
+        free(Msg);
+        abort();
+    }
 
     va_start(Args, Message);
 
@@ -51,8 +62,19 @@ LogMessage(char *Message, ...)
                         Message,
                         Args);
 
-    ASSERT(Msg->BufferSize < BUFFER_SIZE);
-    ASSERT(Msg->BufferSize > 0);
+    if(Msg->BufferSize >= BUFFER_SIZE){
+        printf("LogLib(%d): Msg->BufferSize >= BUFFER_SIZE\n", __LINE__);
+        free(Msg->Buffer);
+        free(Msg);
+        abort();
+    }
+
+    if(Msg->BufferSize <= 0){
+        printf("LogLib(%d): Msg->BufferSize <= 0\n", __LINE__);
+        free(Msg->Buffer);
+        free(Msg);
+        abort();
+    }
 
     QueueLogMsg(Msg);
 
@@ -71,7 +93,10 @@ LogMessageBuffer(char *Message, int BufferSize)
     // 
     //  Check that the library has been initialized
     //
-    ASSERT(LogLibInitialized == true);
+    if (!LogLibInitialized){
+        printf("LogLib(%d): !LogLibInitialized\n", __LINE__);
+        abort();
+    }
 
     Msg = AllocLogLibMsg();
 

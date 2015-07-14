@@ -9,7 +9,7 @@
  *  This can all be in-line, since this is required to be a 
  *  manual step.
  */
-#define LOG_LIBRARY_VERSION()  LogMessage("SegmentHelpers 1.0.0.0 - Built on " __DATE__)
+#define LOG_LIBRARY_VERSION()  LogMessage("SegmentHelpers 1.0.0.1 - Built on " __DATE__)
 
 void
 LogVersion();

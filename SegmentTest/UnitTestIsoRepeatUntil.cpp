@@ -473,15 +473,15 @@ UnitTestIsoRepeatUntil(ENGINE_HANDLE Engine)
                                                         BufferLength, 
                                                         &Status, 
                                                         &SegmentIndex);
+    UtilFreeSegmentMessageBuffers( SegmentArray,
+                            NumSegments,
+                            Buffer);
+
     if (!Handle){
         printf("Failed SeCreateSegmentList(), Status = %d, BadSegmentIndex = %d\n",
                 Status, SegmentIndex);
         return false;
     }
-
-    UtilFreeSegmentMessageBuffers( SegmentArray,
-                            NumSegments,
-                            Buffer);
 
     UnitTestSetHeatflow(55.0f);
 

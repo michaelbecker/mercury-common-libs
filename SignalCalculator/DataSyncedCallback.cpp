@@ -89,7 +89,6 @@ SmUnregisterDataSyncedCallback(DATA_SYNCED_CALLBACK Callback)
 
         if (CallbackData->Callback == Callback){
             DataSyncedCallbackList.remove(CallbackData);
-            memset(CallbackData, 0xee, sizeof(DATA_SYNCED_CALLBACK));
             free(CallbackData);
 
             //
@@ -149,7 +148,6 @@ SendDataSyncedCallbacks(int MinIndexCompleted)
             //
             //  Clean up
             //
-            memset(CallbackData, 0xee, sizeof(DATA_SYNCED_CALLBACK));
             free(CallbackData);
         }
         //
@@ -193,7 +191,6 @@ FlushDataSyncedCallbacks()
         //
         //  Clean up
         //
-        memset(CallbackData, 0xee, sizeof(DATA_SYNCED_CALLBACK));
         free(CallbackData);
     }
 }

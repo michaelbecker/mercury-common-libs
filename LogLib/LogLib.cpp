@@ -40,7 +40,11 @@ volatile bool LogLibInitialized = false;
 void
 QueueLogMsg(LogMsg *Msg)
 {
-    ASSERT(Msg->Signature == LOG_LIB_SIGNATURE);
+    if(Msg->Signature != LOG_LIB_SIGNATURE){
+        printf("LogLib(%d): Msg->Signature != LOG_LIB_SIGNATURE\n", __LINE__);
+        abort();
+    }
+    
 
     //
     //  LOCK --------------------------------------------------------
@@ -73,7 +77,10 @@ DequeueLogMsg(LogMsg **Msg)
         *Msg = LogMsgQueue.back();
         LogMsgQueue.pop_back();
 
-        ASSERT((*Msg)->Signature == LOG_LIB_SIGNATURE);
+        if((*Msg)->Signature != LOG_LIB_SIGNATURE){
+            printf("LogLib(%d): (*Msg)->Signature != LOG_LIB_SIGNATURE\n", __LINE__);
+            abort();
+        }
     }
     else{
         MsgFound = false;
@@ -159,7 +166,10 @@ WriteLogMsgToFile(LogMsg *Msg)
     struct tm result;
     //----------------------------------------------
 
-    ASSERT(Msg->Signature == LOG_LIB_SIGNATURE);
+    if(Msg->Signature != LOG_LIB_SIGNATURE){
+        printf("LogLib(%d): Msg->Signature != LOG_LIB_SIGNATURE\n", __LINE__);
+        abort();
+    }
 
     localtime_r(&(Msg->DateTime.tv_sec), &result);
 
@@ -178,13 +188,22 @@ WriteLogMsgToFile(LogMsg *Msg)
                         );
 
     BytesWritten = write(LogFile, ScratchBuffer, Offset);
-    ASSERT(BytesWritten == Offset);
+    if(BytesWritten != Offset){
+        printf("LogLib(%d): BytesWritten != Offset\n", __LINE__);
+        abort();
+    }
 
     BytesWritten = write(LogFile, Msg->Buffer, Msg->BufferSize);
-    ASSERT(BytesWritten == Msg->BufferSize);
+    if(BytesWritten != Msg->BufferSize){
+        printf("LogLib(%d): BytesWritten != Msg->BufferSize\n", __LINE__);
+        abort();
+    }
 
     BytesWritten = write(LogFile, "\n", 1);
-    ASSERT(BytesWritten == 1);
+    if(BytesWritten != 1){
+        printf("LogLib(%d): BytesWritten != 1\n", __LINE__);
+        abort();
+    }
 
 	memset(Msg->Buffer, 0x11, Msg->BufferSize);
     free(Msg->Buffer);
@@ -217,7 +236,12 @@ LogLibThread(void * lpParam )
             MsgFound = DequeueLogMsg(&Msg);
 
             if (MsgFound){
-                ASSERT(Msg->Signature == LOG_LIB_SIGNATURE);
+
+                if(Msg->Signature != LOG_LIB_SIGNATURE){
+                    printf("LogLib(%d): Msg->Signature != LOG_LIB_SIGNATURE\n", __LINE__);
+                    abort();
+                }
+
                 WriteLogMsgToFile(Msg);
             }
 
@@ -238,28 +262,49 @@ InitLog(void)
     //----------------------------
 
     rc = pthread_mutexattr_init(&attr);
-    ASSERT(rc == 0);
+    if(rc != 0){
+        printf("LogLib(%d): rc != 0\n", __LINE__);
+        abort();
+    }
 
     rc = pthread_mutexattr_setprotocol(&attr, PTHREAD_PRIO_INHERIT);
-    ASSERT(rc == 0);
+    if(rc != 0){
+        printf("LogLib(%d): rc != 0\n", __LINE__);
+        abort();
+    }
     
     rc = pthread_mutex_init(&LogMsgQueueLock, &attr);
-    ASSERT(rc == 0);
+    if(rc != 0){
+        printf("LogLib(%d): rc != 0\n", __LINE__);
+        abort();
+    }
     
     rc = pthread_mutexattr_destroy(&attr);
-    ASSERT(rc == 0);
+    if(rc != 0){
+        printf("LogLib(%d): rc != 0\n", __LINE__);
+        abort();
+    }
     
 
     RotateLogFiles();
     
     LogFile = open(MERCURY_CORTEX_LOG_FILE_0, O_RDWR | O_APPEND | O_CREAT, 0644);
-    ASSERT(LogFile != -1);
+    if(LogFile == -1){
+        printf("LogLib(%d): LogFile == -1\n", __LINE__);
+        abort();
+    }
 
     rc = sem_init(&hLogMsgEvent, 0, 0);
-    ASSERT(rc == 0);
+    if(rc != 0){
+        printf("LogLib(%d): rc != 0\n", __LINE__);
+        abort();
+    }
 
     rc = pthread_create(&ThreadId, NULL, LogLibThread, NULL);
-    ASSERT(rc == 0);
+    if(rc != 0){
+        printf("LogLib(%d): rc != 0\n", __LINE__);
+        abort();
+    }
 
     // 
     //  Flag that Library is initialized.

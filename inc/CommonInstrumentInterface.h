@@ -130,8 +130,21 @@ CiiGetActiveMaster(LoginInfo_t * Info);
  *  API to get whether a LocalUI is connected or not.
  *  This returns the count of the Local UIs attached.
  */
-int __attribute__  ((visibility ("default")))
+int
 CiiLocalUIActive(void);
+
+
+/**
+ *  Special case, because we act as the intermediate between a LocalUI and 
+ *  any real client, we need to know when the LocalUI disconnects, so we can 
+ *  clean up.
+ */
+typedef void (*LocalUIDisconnectCallback_t)(void *UserData);
+
+void
+CiiRegisterLocalUIDisconnect(   LocalUIDisconnectCallback_t callback, 
+                                void *UserData);
+
 
 
 /**
