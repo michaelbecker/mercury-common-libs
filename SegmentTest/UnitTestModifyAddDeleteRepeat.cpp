@@ -142,15 +142,15 @@ UnitTestModifyAddDeleteRepeat(ENGINE_HANDLE Engine)
                                                         BufferLength, 
                                                         &Status, 
                                                         &SegmentIndex);
+    UtilFreeSegmentMessageBuffers( SegmentArray,
+                            idx,
+                            Buffer);
+
     if (!Handle){
         printf("Failed SeCreateSegmentList(), Status = %d, BadSegmentIndex = %d\n",
                 Status, SegmentIndex);
         return false;
     }
-
-    UtilFreeSegmentMessageBuffers( SegmentArray,
-                            idx,
-                            Buffer);
 
     
     SetIsoVerbose(false);
